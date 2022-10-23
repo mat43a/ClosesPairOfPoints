@@ -1,0 +1,71 @@
+using System.Text.RegularExpressions;
+
+class Point
+{
+    public double x { get; set; }
+    public double y { get; set; }
+
+    public Point(double x, double y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double DistanceTo(Point other)
+    {
+        var dx = this.x - other.x;
+        var dy = this.y - other.y;
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
+
+    private static double GenCoord(Random rnd)
+    {
+        return rnd.Next() / (rnd.Next() + 1);
+    }
+
+    public static Point GetPoint(Random rnd)
+    {
+        double x = GenCoord(rnd);
+        double y = GenCoord(rnd);
+        return new Point(x, y);
+    }
+
+    static void Main()
+    {
+        var rnd = new Random();
+
+        var points = Enumerable.Range(0; 10)
+            .Select(x => Point.GetPoint(rnd))
+            .ToArray();
+        foreach (var p in points)
+        {
+            Console.WriteLine($"{p.x}{p.y}");
+        }
+        var tuple = FindClosestpair(points);
+        var distance = points[tuple.Item1].DistanceTo(points[tuple.Item2])
+        Console.WriteLine($"{tuple.Item1}{tuple.Item2}{distance}");
+    }
+
+    static Tuple<int, int> FindClosestpair(Point[]points)
+    {
+        var best1 = 0;
+        var best2 = 1;
+        var bestDistance = points[0].DistanceTo(points[1]);
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            for (int j = 0; j < points.Length; j++)
+            {
+                var currentDistance = points[i].DistanceTo(points[j]);
+                if (bestDistance>currentDistance)
+                {
+                    bestDistance = currentDistance;
+                    best1=i;
+                    best2 = j;
+
+                }
+            }
+        }
+        return new Tuple<int, int>(best1, best2);   
+    }
+}
